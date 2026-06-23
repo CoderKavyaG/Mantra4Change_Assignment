@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { SchoolResponse } from "@prisma/client";
 import {
   calculateParticipationRate,
   calculateEvidenceRate,
@@ -67,7 +68,7 @@ export async function GET(request: Request) {
     const previousMonth = getPreviousMonth(month);
 
     // Filter helper
-    const filterRows = (rows: typeof allRows, targetMonth: string) => {
+    const filterRows = (rows: SchoolResponse[], targetMonth: string) => {
       return rows.filter((row) => {
         if (row.reportingMonth !== targetMonth) return false;
         
