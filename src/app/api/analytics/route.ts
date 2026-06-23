@@ -92,14 +92,14 @@ export async function GET(request: Request) {
 
     // 1. Calculate KPI Metrics
     const totalSchools = currentRows.length;
-    const participatingSchools = currentRows.filter((r) => r.conducted).length;
+    const participatingSchools = currentRows.filter((r: typeof allRows[number]) => r.conducted).length;
     const participationRate = calculateParticipationRate(currentRows);
     
-    const schoolsWithEvidence = currentRows.filter((r) => r.evidenceSubmitted).length;
+    const schoolsWithEvidence = currentRows.filter((r: typeof allRows[number]) => r.evidenceSubmitted).length;
     const evidenceRate = calculateEvidenceRate(currentRows);
 
-    const totalEnrollment = currentRows.reduce((sum, r) => sum + r.derivedTotalEnrollment, 0);
-    const totalAttendance = currentRows.reduce((sum, r) => sum + r.derivedTotalAttendance, 0);
+    const totalEnrollment = currentRows.reduce((sum: number, r: typeof allRows[number]) => sum + r.derivedTotalEnrollment, 0);
+    const totalAttendance = currentRows.reduce((sum: number, r: typeof allRows[number]) => sum + r.derivedTotalAttendance, 0);
     const attendanceRate = calculateOverallAttendanceRate(currentRows);
 
     // Calculate previous month for delta
@@ -124,7 +124,7 @@ export async function GET(request: Request) {
     // Passing all current rows representing target month, but since aggregateByDistrict/Block filters
     // by row.reportingMonth === month, we need to pass currentRows which are already filtered for month.
     // Or we can pass the whole database rows filtered by other filters but with reportingMonth preserved.
-    const allMonthsFilteredRows = allRows.filter((row) => {
+    const allMonthsFilteredRows = allRows.filter((row: typeof allRows[number]) => {
       if (selectedDistricts.length > 0 && !selectedDistricts.includes(row.district)) {
         return false;
       }

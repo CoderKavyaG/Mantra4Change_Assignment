@@ -48,9 +48,9 @@ export async function GET(request: Request) {
     });
 
     // 4. Aggregate Finance Utilization
-    const totalApprovedUnits = financeRecords.reduce((sum, r) => sum + r.approvedBudgetUnits, 0);
-    const totalMonthlyUnits = financeRecords.reduce((sum, r) => sum + r.monthlyUtilizedUnits, 0);
-    const totalCumulativeUnits = financeRecords.reduce((sum, r) => sum + r.cumulativeUtilizedUnits, 0);
+    const totalApprovedUnits = financeRecords.reduce((sum: number, r: typeof financeRecords[number]) => sum + r.approvedBudgetUnits, 0);
+    const totalMonthlyUnits = financeRecords.reduce((sum: number, r: typeof financeRecords[number]) => sum + r.monthlyUtilizedUnits, 0);
+    const totalCumulativeUnits = financeRecords.reduce((sum: number, r: typeof financeRecords[number]) => sum + r.cumulativeUtilizedUnits, 0);
     const cumulativeUtilizationRate =
       totalApprovedUnits > 0 ? (totalCumulativeUnits / totalApprovedUnits) * 100 : 0;
 
