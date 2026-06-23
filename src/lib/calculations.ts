@@ -1,4 +1,4 @@
-import { SchoolResponse } from "../generated/prisma/client";
+import { SchoolResponse } from "@prisma/client";
 import { classifyRisk } from "./risk-engine";
 
 /**
