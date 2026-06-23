@@ -73,14 +73,8 @@ async function main() {
       });
     }
 
-    // Insert using transaction batches of 100 for SQLite performance
-    const batchSize = 100;
-    for (let i = 0; i < batch.length; i += batchSize) {
-      const chunk = batch.slice(i, i + batchSize);
-      await prisma.$transaction(
-        chunk.map(data => prisma.schoolResponse.create({ data }))
-      );
-    }
+    console.log(`Inserting ${batch.length} school response records...`);
+    await prisma.schoolResponse.createMany({ data: batch });
     totalSchoolResponses += batch.length;
   }
   console.log(`Total SchoolResponse rows created: ${totalSchoolResponses}`);
@@ -109,12 +103,8 @@ async function main() {
       financeNote: record["finance_note"] || ""
     }));
 
-    for (let i = 0; i < financeData.length; i += 50) {
-      const chunk = financeData.slice(i, i + 50);
-      await prisma.$transaction(
-        chunk.map(data => prisma.grantFinance.create({ data }))
-      );
-    }
+    console.log(`Inserting ${financeData.length} finance records...`);
+    await prisma.grantFinance.createMany({ data: financeData });
   } else {
     throw new Error(`File not found: ${financeFile}`);
   }
@@ -149,9 +139,8 @@ async function main() {
       draftReportText: record["draft_report_text"] || ""
     }));
 
-    for (const data of performanceData) {
-      await prisma.grantPerformance.create({ data });
-    }
+    console.log(`Inserting ${performanceData.length} performance records...`);
+    await prisma.grantPerformance.createMany({ data: performanceData });
   } else {
     throw new Error(`File not found: ${perfFile}`);
   }
@@ -178,9 +167,8 @@ async function main() {
       usageNote: record["usage_note"] || ""
     }));
 
-    for (const data of mediaData) {
-      await prisma.evidenceMedia.create({ data });
-    }
+    console.log(`Inserting ${mediaData.length} media records...`);
+    await prisma.evidenceMedia.createMany({ data: mediaData });
   } else {
     throw new Error(`File not found: ${mediaFile}`);
   }

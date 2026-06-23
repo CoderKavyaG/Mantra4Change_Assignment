@@ -1,14 +1,21 @@
+import dotenv from "dotenv";
+dotenv.config({ override: true });
 import { PrismaClient } from "../generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import path from "path";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { Pool, neonConfig } from "@neondatabase/serverless";
+
+if (typeof globalThis.WebSocket !== "undefined") {
+  neonConfig.webSocketConstructor = globalThis.WebSocket;
+}
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
 
-const dbPath = path.resolve(process.cwd(), "dev.db").replace(/\\/g, "/");
-console.log("Database absolute path:", dbPath);
-const adapter = new PrismaBetterSqlite3({
-  url: `file:${dbPath}`
-});
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL environment variable is missing.");
+}
+
+const adapter = new PrismaNeon({ connectionString });
 
 export const prisma =
   globalForPrisma.prisma ??

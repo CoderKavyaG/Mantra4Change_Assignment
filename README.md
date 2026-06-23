@@ -20,18 +20,24 @@ npm install
 ```
 
 ### 3. Environment Variables
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (or `.env.local` for local development):
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://username:password@hostname-pooler.region.neon.tech/neondb?sslmode=require"
 AI_ENABLED="false"
 GEMINI_API_KEY="your-api-key-here"
 ```
 
-### 4. Database Seed & Import
-Prisma uses the native SQLite adapter to store tables. Import and verify raw CSV records:
+### 4. Database Setup & Ingestion
+Synchronize the database schema with Neon PostgreSQL, run the seeding script, and verify integrity:
 ```bash
+# Push schema structure to Neon Postgres
+npx prisma db push
+
+# Run CSV data ingestion and seeding
+npx tsx scripts/ingest.ts
+
 # Verify school rows, finance, performance, and media records count
-npx --yes tsx scripts/verify.ts
+npx tsx scripts/verify.ts
 ```
 
 ### 5. Run Development Server
@@ -47,7 +53,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser to view 
 
 This application separates data persistence, calculation layers, API endpoints, and client render cycles:
 
-1. **Database Layer (SQLite + Prisma):** Stores raw transactions and media indexes.
+1. **Database Layer (Neon PostgreSQL + Prisma):** Stores raw transactions and media indexes hosted in the cloud.
 2. **Deterministic Core Logic:** All rates, aggregation maps, and risk rules are isolated in `calculations.ts` and `risk-engine.ts`.
 3. **API Controllers:** Next.js API routes (`/api/analytics`, `/api/filters`, `/api/grants/analytics`) run math summaries server-side.
 4. **Client Interface:** Client-side React components render dashboards, multi-select selectors, top lists, and report previews.
@@ -155,7 +161,7 @@ The narrative text drafting is controlled by the `AI_ENABLED` flag:
 ## Known Limitations
 
 - **Local Assets:** Media files must be copied manually to `public/images/` to prevent broken image references on the web client.
-- **SQLite Concurrency:** SQLite restricts concurrent database write operations (transactions lock the db), which limits multi-tenant scaling.
+- **Database Connection Caps:** Free-tier Neon Postgres instances have connection caps that require connection pooling configurations under heavy concurrency.
 - **Dynamic Active Styling:** Active navigation tags in `/layout.tsx` do not dynamically highlight links based on router paths.
 
 ---
@@ -164,4 +170,4 @@ The narrative text drafting is controlled by the `AI_ENABLED` flag:
 
 1. **Automated Visual Regression Tests:** Add Playwright tests to visually check KPI cards, filter actions, and chart metrics across different viewport sizes.
 2. **Role-Based Access Control (RBAC):** Enable user login and JWT auth to restrict donor visibility to authorized grants and districts only.
-3. **Database Migration to Supabase:** Transition Prisma from local SQLite files to a hosted Postgres/Supabase instance to support concurrent users.
+3. **Caching and Pagination:** Implement Redis or React-Query caching for district metrics and add pagination to scale response grids.
