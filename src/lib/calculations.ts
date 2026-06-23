@@ -1,5 +1,31 @@
-import { SchoolResponse } from "@prisma/client";
 import { classifyRisk } from "./risk-engine";
+
+export interface SchoolResponse {
+  id?: number;
+  reportingMonth: string;
+  timestamp: string;
+  schoolName: string;
+  schoolCode: string;
+  district: string;
+  block: string;
+  conducted: boolean;
+  evidenceSubmitted: boolean;
+  classes: string;
+  subject: string;
+  class6Enrollment: number;
+  class6ScienceAttendance: number;
+  class6MathAttendance: number;
+  class7Enrollment: number;
+  class7ScienceAttendance: number;
+  class7MathAttendance: number;
+  class8Enrollment: number;
+  class8ScienceAttendance: number;
+  class8MathAttendance: number;
+  derivedTotalEnrollment: number;
+  derivedTotalAttendance: number;
+  derivedOverallAttendanceRate: number;
+  derivedRiskStatus: string;
+}
 
 /**
  * Calculates the participation rate as a percentage (0-100).
