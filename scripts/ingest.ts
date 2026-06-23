@@ -40,7 +40,7 @@ async function main() {
     const records = parse(content, {
       columns: true,
       skip_empty_lines: true
-    });
+    }) as any[];
 
     console.log(`Parsed ${records.length} records from ${filename}`);
 
